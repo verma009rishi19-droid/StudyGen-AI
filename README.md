@@ -2,6 +2,9 @@
 
 > A modern, production-grade EdTech web application designed to turn raw study materials (lecture notes, textbook excerpts, syllabi) into structured summaries, prioritized exam topics, customizable question papers, and interactive quizzes with real-time feedback.
 
+🚀 **Live Demo**: [https://studygen-ai-2x1i.onrender.com](https://studygen-ai-2x1i.onrender.com)  
+📖 **API Docs**: [https://studygen-ai-2x1i.onrender.com/docs](https://studygen-ai-2x1i.onrender.com/docs)
+
 ---
 
 ## 📖 Table of Contents
