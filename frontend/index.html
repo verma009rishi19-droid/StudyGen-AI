@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyGen AI — Full-Stack AI Study Assistant</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/quiz.css">
+</head>
+<body>
+
+  <!-- Top App Navigation -->
+  <header class="app-header">
+    <div class="brand-container" id="brandHomeLink" title="StudyGen AI — Click to go Home, Double-Click to Refresh Data" style="cursor: pointer;">
+      <div class="brand-icon">📚</div>
+      <span class="brand-title">StudyGen AI</span>
+    </div>
+
+    <nav class="nav-links">
+      <a href="#" class="nav-link" id="navDashboardLink">Dashboard</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary btn-sm" id="headerReloadBtn" title="Sync & Refresh All Data">🔄 Refresh</button>
+      <div class="ai-status-pill" id="aiStatusBadge" title="Current AI Provider Configuration">
+        <span class="status-dot" id="aiStatusDot"></span>
+        <span id="aiStatusText">AI: Initializing...</span>
+      </div>
+      <div id="userNavSection"></div>
+    </div>
+  </header>
+
+  <!-- Main Content Viewport -->
+  <main class="app-main">
+
+    <!-- 1. LANDING PAGE VIEW -->
+    <section id="view-landing" class="view-section view-container">
+      <div class="landing-hero">
+        <div class="badge-tag">⚡ Intelligent Exam & Study Preparation Platform</div>
+        <h1 class="landing-title">Turn your study material into <br><span class="gradient-text">smarter preparation.</span></h1>
+        <p class="landing-subtitle">
+          Upload lecture notes, textbook excerpts, or paste syllabus materials. StudyGen AI extracts executive summaries, curated exam topics, auto-generated question papers, and interactive quizzes with instant grading.
+        </p>
+        <div class="landing-cta-group">
+          <button class="btn btn-primary btn-lg" id="landingCtaStart">Open Dashboard →</button>
+          <button class="btn btn-secondary btn-lg" id="landingCtaDemo">⚡ Explore Demo Project (One-Click)</button>
+        </div>
+
+        <!-- Instant AI Study Generator Card -->
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-medium); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-md); text-align: left; margin-top: 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+            <div>
+              <h2 style="font-size: 1.35rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                <span>🚀</span> Instant Study Kit Generator
+              </h2>
+              <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Paste any notes below or pick a sample to generate summaries, exam topics, and an interactive quiz in seconds.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Try Sample:</span>
+              <button type="button" class="btn btn-secondary btn-sm sample-preset-btn" data-preset="wsn">📡 IoT Networks</button>
+              <button type="button" class="btn btn-secondary btn-sm sample-preset-btn" data-preset="ai">🤖 AI & ML</button>
+              <button type="button" class="btn btn-secondary btn-sm sample-preset-btn" data-preset="bio">🧬 Genetics</button>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <input type="text" id="quickSubjectInput" placeholder="Subject / Course Name (e.g. Computer Science)" value="IoT & Networking" style="width: 100%;">
+            <input type="text" id="quickDocTitleInput" placeholder="Document Title (e.g. Wireless Sensor Networks Notes)" value="WSN_Lecture_Notes.txt" style="width: 100%;">
+          </div>
+
+          <textarea id="quickStudyMaterialInput" placeholder="Paste your syllabus notes, textbook chapter excerpt, or lecture transcripts here (minimum 20 characters)..." style="width: 100%; height: 160px; resize: vertical; margin-bottom: 14px;"></textarea>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div style="display: flex; gap: 18px; font-size: 0.9rem; color: var(--text-secondary);">
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="quickCheckSummary" checked> AI Summary
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="quickCheckTopics" checked> Key Exam Topics
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" id="quickCheckQuiz" checked> 5-Question Quiz
+              </label>
+            </div>
+            <button type="button" class="btn btn-primary btn-lg" id="quickGenerateStudyKitBtn" style="padding: 12px 28px;">
+              ⚡ Generate Complete Study Kit
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Showcase Grid -->
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📑</div>
+          <h3>Structured Summaries</h3>
+          <p>Comprehensive overviews, key concept extraction, and bulleted quick-revision notes grounded directly in your source documents.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3>Important Exam Topics</h3>
+          <p>Prioritized study cards categorized by Critical, High, and Medium relevance with related concepts to target revision efficiently.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>Question Paper Generator</h3>
+          <p>Generate customized question papers configured by difficulty, total marks, and formats including MCQ, short answer, and long answer.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🚀</div>
+          <h3>Interactive Quiz Mode</h3>
+          <p>Real-time quiz engine with one-at-a-time questions, instant verification, explanations from your notes, and performance tracking.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. DASHBOARD VIEW -->
+    <section id="view-dashboard" class="view-section view-container" style="display: none;">
+      <div class="dashboard-header">
+        <div>
+          <h1 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 6px;">Study Projects</h1>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">Manage your subjects, lecture documents, and generated assessments.</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-secondary" id="dashboardRefreshBtn" title="Sync and refresh all projects">🔄 Sync</button>
+          <button class="btn btn-primary" onclick="Modal.open('newProjectModal')">+ New Study Project</button>
+        </div>
+      </div>
+
+      <!-- Quick Statistics (4 cards) -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Projects</div>
+          <div class="stat-value" id="statTotalProjects">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Documents Analyzed</div>
+          <div class="stat-value" id="statTotalDocs">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Question Papers</div>
+          <div class="stat-value" id="statTotalPapers">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Practice Quizzes</div>
+          <div class="stat-value" id="statTotalQuizzes">0</div>
+        </div>
+      </div>
+
+      <!-- Interactive Dashboard Toolbar -->
+      <div class="dashboard-toolbar" style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; align-items: center; justify-content: space-between; background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: var(--radius-md);">
+        <div style="flex: 1; min-width: 240px; position: relative;">
+          <input type="text" id="dashboardSearchInput" placeholder="🔍 Search projects by title, subject, or notes..." style="width: 100%;">
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <label style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Subject:</label>
+            <select id="dashboardSubjectFilter" style="padding: 8px 12px; font-size: 0.9rem;">
+              <option value="">All Subjects</option>
+            </select>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <label style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Sort:</label>
+            <select id="dashboardSortSelect" style="padding: 8px 12px; font-size: 0.9rem;">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="name">Name (A-Z)</option>
+              <option value="papers">Most Question Papers</option>
+              <option value="docs">Most Documents</option>
+            </select>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="dashboardClearFiltersBtn" style="font-size: 0.85rem;">Clear</button>
+        </div>
+      </div>
+
+      <!-- Active Filters Counter -->
+      <div id="dashboardFilterCount" style="margin-bottom: 16px; font-size: 0.9rem; color: var(--text-secondary); display: none;"></div>
+
+      <!-- Projects Grid -->
+      <div class="projects-grid" id="projectsContainer"></div>
+    </section>
+    <!-- 3. PROJECT WORKSPACE VIEW -->
+    <section id="view-project" class="view-section view-container" style="display: none;">
+      <!-- Breadcrumb & Header -->
+      <div style="margin-bottom: 24px;">
+        <button class="btn btn-secondary btn-sm" id="backToDashboardBtn" style="margin-bottom: 16px;">← Back to Projects</button>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <span class="project-badge" id="projectSubjectHeader">Subject</span>
+            <h1 id="projectTitleHeader" style="font-size: 2rem; font-weight: 800; margin-bottom: 6px;">Project Title</h1>
+            <p id="projectDescHeader" style="color: var(--text-secondary); font-size: 0.95rem; max-width: 700px;"></p>
+          </div>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-secondary" id="btnGenerateAllStudyKit">⚡ Generate All (Summary + Topics + Quiz)</button>
+            <button class="btn btn-primary" onclick="Modal.open('generatePaperModal')">📝 Generate Question Paper</button>
+            <button class="btn btn-danger btn-sm" id="deleteProjectBtn">Delete Project</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="tab-navigation">
+        <button class="tab-btn active" data-tab="material">📚 Study Material</button>
+        <button class="tab-btn" data-tab="summary">📑 AI Summary</button>
+        <button class="tab-btn" data-tab="topics">🎯 Important Topics</button>
+        <button class="tab-btn" data-tab="papers">📝 Question Papers</button>
+        <button class="tab-btn" data-tab="history">⏱ History & Logs</button>
+      </div>
+
+      <!-- Tab 1: Study Material -->
+      <div id="tab-material" class="tab-pane active">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
+          <!-- Paste Text Card -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 14px;">Paste Study Notes</h3>
+            <input type="text" id="pastedMaterialTitle" placeholder="Title (e.g. Chapter 3 Notes.txt)" style="width: 100%; margin-bottom: 12px;">
+            <textarea id="pastedMaterialInput" placeholder="Paste your lecture notes, textbook excerpt, or study guide text here..." style="width: 100%; height: 180px; resize: vertical; margin-bottom: 12px;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="pasteCharCounter" style="font-size: 0.8rem; color: var(--text-muted);">0 characters</span>
+              <button class="btn btn-primary btn-sm" id="savePastedMaterialBtn">Add to Project</button>
+            </div>
+          </div>
+
+          <!-- Upload File Card -->
+          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px; display: flex; flex-direction: column;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 14px;">Upload Document (.pdf, .txt, .md)</h3>
+            <div id="fileDropZone" style="flex: 1; border: 2px dashed var(--border-medium); border-radius: var(--radius-md); background: var(--bg-input); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; text-align: center; cursor: pointer;">
+              <div style="font-size: 2.2rem; margin-bottom: 12px;">📁</div>
+              <p style="font-size: 0.95rem; font-weight: 600; margin-bottom: 6px;">Drag and drop PDF, TXT, or MD files here</p>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">PDF textbooks, lecture slides & notes up to 10MB</p>
+              <label for="fileUploadInput" class="btn btn-secondary btn-sm" style="cursor: pointer;">Browse Files</label>
+              <input type="file" id="fileUploadInput" accept=".pdf,.txt,.md,application/pdf,text/plain" style="display: none;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Document List -->
+        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;">Uploaded Documents</h3>
+        <div id="documentsListContainer"></div>
+      </div>
+
+      <!-- Tab 2: AI Summary -->
+      <div id="tab-summary" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <label style="font-size: 0.9rem; font-weight: 600;">Source Document:</label>
+            <select id="summaryDocSelector" style="min-width: 260px;"></select>
+          </div>
+          <button class="btn btn-primary" id="btnGenerateSummary">⚡ Generate AI Summary</button>
+        </div>
+        <div id="summaryContentContainer"></div>
+      </div>
+
+      <!-- Tab 3: Important Topics -->
+      <div id="tab-topics" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <label style="font-size: 0.9rem; font-weight: 600;">Source Document:</label>
+            <select id="topicsDocSelector" style="min-width: 260px;"></select>
+          </div>
+          <button class="btn btn-primary" id="btnGenerateTopics">🎯 Extract Important Topics</button>
+        </div>
+        <div class="topics-grid" id="topicsGridContainer"></div>
+      </div>
+
+      <!-- Tab 4: Question Papers -->
+      <div id="tab-papers" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h2 style="font-size: 1.3rem; font-weight: 700;">Generated Question Papers</h2>
+          <button class="btn btn-primary" onclick="Modal.open('generatePaperModal')">+ New Question Paper</button>
+        </div>
+        <div id="questionPapersContainer"></div>
+      </div>
+
+      <!-- Tab 5: Generation History -->
+      <div id="tab-history" class="tab-pane">
+        <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 16px;">AI Generation Audit Trail</h2>
+        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+              <tr style="background: var(--bg-surface-elevated); border-bottom: 1px solid var(--border-medium); font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">
+                <th style="padding: 12px 16px;">Task</th>
+                <th style="padding: 12px 16px;">Model Used</th>
+                <th style="padding: 12px 16px;">Status</th>
+                <th style="padding: 12px 16px;">Details</th>
+                <th style="padding: 12px 16px;">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <!-- 4. INTERACTIVE QUIZ VIEW -->
+    <section id="view-quiz" class="view-section view-container" style="display: none;">
+      <div class="quiz-container">
+        
+        <!-- Active Question View -->
+        <div id="quizActiveQuestionSection">
+          <div class="quiz-header">
+            <div class="quiz-meta-row">
+              <span class="quiz-title" id="quizHeaderTitle">Question Paper</span>
+              <span class="quiz-step-indicator" id="quizStepIndicator">Question 1 of 5</span>
+            </div>
+            <div class="quiz-progress-track">
+              <div class="quiz-progress-fill" id="quizProgressFill" style="width: 20%;"></div>
+            </div>
+          </div>
+
+          <div class="quiz-question-card">
+            <div class="quiz-question-badges">
+              <span class="badge-difficulty" id="quizBadgeDifficulty">Medium</span>
+              <span class="badge-marks" id="quizBadgeMarks">2 Marks</span>
+            </div>
+            <h2 class="quiz-question-text" id="quizQuestionText">Question text loading...</h2>
+            
+            <div id="quizOptionsContainer"></div>
+            <div id="quizFeedbackContainer"></div>
+          </div>
+
+          <div class="quiz-controls">
+            <button class="btn btn-secondary btn-sm" id="quizExitBtn">✕ Exit Quiz</button>
+            <div style="display: flex; gap: 12px;">
+              <button class="btn btn-primary" id="quizSubmitAnswerBtn">Submit Answer</button>
+              <button class="btn btn-primary" id="quizNextQuestionBtn" style="display: none;">Next Question →</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quiz Final Result View -->
+        <div id="quizResultSection" style="display: none;">
+          <div class="quiz-result-card">
+            <div class="result-icon">🏆</div>
+            <h1 class="result-title">Quiz Completed!</h1>
+            <p class="result-subtitle">Great job reviewing your study material.</p>
+
+            <div class="result-score-circle">
+              <div class="score-percent" id="quizScorePercent">80%</div>
+              <div class="score-ratio" id="quizScoreRatio">4 of 5 correct</div>
+            </div>
+
+            <div class="result-metrics-grid">
+              <div class="metric-item">
+                <div class="metric-number" id="quizMetricEarnedMarks">8</div>
+                <div class="metric-title">Marks Earned</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-number correct" id="quizMetricCorrect">4</div>
+                <div class="metric-title">Correct</div>
+              </div>
+              <div class="metric-item">
+                <div class="metric-number incorrect" id="quizMetricIncorrect">1</div>
+                <div class="metric-title">Incorrect</div>
+              </div>
+            </div>
+
+            <div class="result-actions">
+              <button class="btn btn-secondary" id="quizResultReturnBtn">← Return to Project</button>
+              <button class="btn btn-primary" id="quizResultRetakeBtn">🔄 Retake Quiz</button>
+            </div>
+
+            <div class="result-review-list">
+              <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;">Answer Breakdown & Explanations</h3>
+              <div id="quizReviewBreakdown"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modals -->
+  <!-- 1. New Project Modal -->
+  <div class="modal-backdrop" id="newProjectModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 700;">Create Study Project</h3>
+        <button onclick="Modal.close('newProjectModal')" style="font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+      </div>
+      <form id="newProjectForm">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Project Name *</label>
+            <input type="text" id="newProjName" placeholder="e.g. Wireless Sensor Networks" required style="width: 100%;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Subject *</label>
+            <input type="text" id="newProjSubject" placeholder="e.g. IoT / Computer Science" required style="width: 100%;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Description</label>
+            <textarea id="newProjDesc" placeholder="Brief notes on what this project covers..." style="width: 100%; height: 80px; resize: vertical;"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="Modal.close('newProjectModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Generate Question Paper Modal -->
+  <div class="modal-backdrop" id="generatePaperModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 700;">Configure Question Paper</h3>
+        <button onclick="Modal.close('generatePaperModal')" style="font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+      </div>
+      <form id="generatePaperForm">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Paper Title</label>
+            <input type="text" id="qpTitleInput" placeholder="Midterm Practice Test" style="width: 100%;">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div>
+              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Number of Questions</label>
+              <input type="number" id="qpNumQuestionsInput" value="5" min="1" max="25" style="width: 100%;">
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Total Marks</label>
+              <input type="number" id="qpTotalMarksInput" value="25" min="5" max="100" style="width: 100%;">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div>
+              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Difficulty</label>
+              <select id="qpDifficultyInput" style="width: 100%;">
+                <option value="Easy">Easy</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+            </div>
+            <div>
+              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Question Type</label>
+              <select id="qpTypeInput" style="width: 100%;">
+                <option value="MCQ" selected>Multiple Choice (MCQ)</option>
+                <option value="Short Answer">Short Answer</option>
+                <option value="Long Answer">Long Answer</option>
+                <option value="Mixed">Mixed Types</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Suggested Duration (Minutes)</label>
+            <input type="number" id="qpDurationInput" value="30" min="5" max="180" style="width: 100%;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="Modal.close('generatePaperModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Generate Questions ⚡</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Login Modal -->
+  <div class="modal-backdrop" id="loginModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 700;">Log In to StudyGen AI</h3>
+        <button onclick="Modal.close('loginModal')" style="font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+      </div>
+      <form id="loginForm">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Email</label>
+            <input type="email" id="loginEmail" required placeholder="student@example.com" style="width: 100%;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Password</label>
+            <input type="password" id="loginPassword" required placeholder="••••••••" style="width: 100%;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="Modal.close('loginModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Log In</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Register Modal -->
+  <div class="modal-backdrop" id="registerModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; font-weight: 700;">Create Account</h3>
+        <button onclick="Modal.close('registerModal')" style="font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+      </div>
+      <form id="registerForm">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Your Name</label>
+            <input type="text" id="regName" required placeholder="Alex Scholar" style="width: 100%;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Email</label>
+            <input type="email" id="regEmail" required placeholder="alex@university.edu" style="width: 100%;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Password</label>
+            <input type="password" id="regPassword" required minlength="6" placeholder="At least 6 characters" style="width: 100%;">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="Modal.close('registerModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Sign Up Free</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Multi-Stage AI Loading Overlay -->
+  <div class="ai-loader-overlay" id="aiLoaderOverlay">
+    <div class="spinner-ring"></div>
+    <div class="ai-loader-title">StudyGen AI Working</div>
+    <div class="ai-loader-subtitle" id="aiLoaderSubtitle">Analyzing study material...</div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/js/state.js"></script>
+  <script src="/js/components.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
