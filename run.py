@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 import os
 from pathlib import Path
 
@@ -9,9 +9,12 @@ sys.path.insert(0, str(backend_dir))
 
 if __name__ == "__main__":
     import uvicorn
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", 8000))
+    debug = os.getenv("DEBUG", "False").lower() in ("true", "1")
     print("==================================================")
     print("  Starting StudyGen AI Full-Stack Application")
-    print("  URL: http://127.0.0.1:8000")
-    print("  Docs: http://127.0.0.1:8000/docs")
+    print(f"  Listening on: http://{host}:{port}")
+    print(f"  Docs: http://{host}:{port}/docs")
     print("==================================================")
-    uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("app.main:app", host=host, port=port, reload=debug)
