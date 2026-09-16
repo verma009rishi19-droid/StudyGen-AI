@@ -28,6 +28,16 @@ async function initApp() {
   updateAuthUI();
   setupEventListeners();
 
+  const quickInput = document.getElementById("quickStudyMaterialInput");
+  if (quickInput && !quickInput.value) {
+    const defaultText = "Wireless Sensor Networks (WSNs) consist of spatially dispersed autonomous devices called sensor nodes that monitor environmental conditions such as temperature, sound, and pressure. Each node typically comprises a sensing unit, a processing microcontroller, a radio transceiver, and a battery power unit. Energy efficiency is the paramount design constraint in WSNs because nodes are often deployed in inaccessible areas where battery replacement is infeasible. Key routing protocols include Directed Diffusion, LEACH (Low-Energy Adaptive Clustering Hierarchy), and PEGASIS.";
+    quickInput.value = defaultText;
+    const cEl = document.getElementById("charCountDisplay");
+    const rEl = document.getElementById("readTimeDisplay");
+    if (cEl) cEl.textContent = `${defaultText.length} characters`;
+    if (rEl) rEl.textContent = "~2 min read";
+  }
+
   if (appState.user) {
     await navigateTo("dashboard");
   } else {
@@ -926,26 +936,84 @@ function renderQuizResultPage(result) {
   const resultSection = document.getElementById("quizResultSection");
   resultSection.style.display = "block";
 
-  document.getElementById("quizScorePercent").textContent = `${Math.round(result.percentage)}%`;
+  const pct = Math.round(result.percentage || 0);
+  document.getElementById("quizScorePercent").textContent = `${pct}%`;
   document.getElementById("quizScoreRatio").textContent = `${result.correct_count} of ${result.total_questions} correct`;
   document.getElementById("quizMetricEarnedMarks").textContent = result.score;
   document.getElementById("quizMetricCorrect").textContent = result.correct_count;
   document.getElementById("quizMetricIncorrect").textContent = result.incorrect_count;
 
+  if (pct >= 70) {
+    triggerConfetti();
+    Toast.success("🎉 Outstanding Score! Mastery Achieved!");
+  }
+
   const reviewContainer = document.getElementById("quizReviewBreakdown");
   reviewContainer.innerHTML = (result.details || []).map((item, idx) => `
-    <div class="review-card ${item.is_correct ? 'correct' : 'incorrect'}">
-      <div class="review-header">
-        <span>Question ${idx + 1}: ${escapeHtml(item.question_text)}</span>
-        <span style="color: ${item.is_correct ? 'var(--success)' : 'var(--danger)'};">
+    <div class="review-question-item">
+      <div class="review-q-header">
+        <span style="font-weight: 700; color: #fff;">Question ${idx + 1}</span>
+        <span class="${item.is_correct ? 'review-q-status-correct' : 'review-q-status-incorrect'}">
           ${item.is_correct ? '✓ Correct' : '✕ Incorrect'}
         </span>
       </div>
-      <div style="font-size: 0.9rem; margin-bottom: 4px;"><strong>Your Answer:</strong> ${escapeHtml(item.user_answer || "No answer provided")}</div>
-      ${!item.is_correct ? `<div style="font-size: 0.9rem; color: var(--success); margin-bottom: 4px;"><strong>Correct Answer:</strong> ${escapeHtml(item.correct_answer)}</div>` : ''}
-      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px;">Explanation: ${escapeHtml(item.explanation)}</div>
+      <div class="review-q-text">${escapeHtml(item.question_text)}</div>
+      <div style="font-size: 0.9rem; margin-bottom: 6px;"><strong>Your Answer:</strong> <span style="color: ${item.is_correct ? 'var(--success)' : 'var(--danger)'};">${escapeHtml(item.user_answer || "No answer provided")}</span></div>
+      ${!item.is_correct ? `<div style="font-size: 0.9rem; color: var(--success); margin-bottom: 6px;"><strong>Correct Answer:</strong> ${escapeHtml(item.correct_answer)}</div>` : ''}
+      <div class="review-q-detail"><strong>💡 Explanation:</strong> ${escapeHtml(item.explanation)}</div>
     </div>
   `).join("");
+}
+
+function triggerConfetti() {
+  const canvas = document.getElementById("confettiCanvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const pieces = [];
+  const colors = ["#6366f1", "#06b6d4", "#a855f7", "#10b981", "#f59e0b", "#ec4899", "#38bdf8", "#ffffff"];
+
+  for (let i = 0; i < 120; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * (canvas.height * 0.4) - 40,
+      size: Math.random() * 8 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      speedY: Math.random() * 4 + 2,
+      speedX: Math.random() * 4 - 2,
+      rotation: Math.random() * 360,
+      rotationSpeed: Math.random() * 8 - 4
+    });
+  }
+
+  let startTime = Date.now();
+  function render() {
+    const elapsed = Date.now() - startTime;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    pieces.forEach(p => {
+      p.y += p.speedY;
+      p.x += p.speedX;
+      p.rotation += p.rotationSpeed;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rotation * Math.PI) / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+      ctx.restore();
+    });
+
+    if (elapsed < 3500) {
+      requestAnimationFrame(render);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  render();
 }
 
 function exitQuizMode() {
@@ -995,6 +1063,12 @@ function setupEventListeners() {
     Toast.info("Navigated to Home.");
   });
 
+  // Nav Home link
+  document.getElementById("navHomeLink")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    navigateTo("landing");
+  });
+
   // Double-click brand logo to sync/refresh data
   document.getElementById("brandHomeLink")?.addEventListener("dblclick", () => {
     triggerAppSync();
@@ -1012,6 +1086,56 @@ function setupEventListeners() {
 
   document.getElementById("landingCtaStart")?.addEventListener("click", () => {
     navigateTo("dashboard");
+  });
+
+  // Global Keyboard Shortcut: Ctrl + K or Cmd + K opens dashboard search
+  window.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      navigateTo("dashboard").then(() => {
+        const searchInput = document.getElementById("dashboardSearchInput");
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      });
+    }
+  });
+
+  // Live Input Character and Reading-Time Gauge
+  function updateQuickInputStats(text) {
+    const len = (text || "").length;
+    const words = (text || "").trim().split(/\s+/).filter(Boolean).length;
+    const readMins = Math.max(1, Math.ceil(words / 200));
+    const cEl = document.getElementById("charCountDisplay");
+    const rEl = document.getElementById("readTimeDisplay");
+    if (cEl) cEl.textContent = `${len.toLocaleString()} characters`;
+    if (rEl) rEl.textContent = len > 0 ? `~${readMins} min read` : `~0 min read`;
+  }
+
+  const quickInput = document.getElementById("quickStudyMaterialInput");
+  if (quickInput) {
+    quickInput.addEventListener("input", (e) => updateQuickInputStats(e.target.value));
+  }
+
+  // Interactive Live Feature Preview Showcase Tabs
+  document.querySelectorAll(".showcase-tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".showcase-tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".showcase-tab-content").forEach(pane => pane.style.display = "none");
+      btn.classList.add("active");
+      const tabName = btn.getAttribute("data-tab");
+      if (tabName === "summary") {
+        const p = document.getElementById("previewPaneSummary");
+        if (p) p.style.display = "block";
+      } else if (tabName === "topics") {
+        const p = document.getElementById("previewPaneTopics");
+        if (p) p.style.display = "block";
+      } else if (tabName === "quiz") {
+        const p = document.getElementById("previewPaneQuiz");
+        if (p) p.style.display = "block";
+      }
+    });
   });
 
   // Dashboard Toolbar Controls (Search, Filter, Sort, Clear)
@@ -1066,15 +1190,21 @@ function setupEventListeners() {
     }
   };
 
-  // Sample preset click listeners
+  // Sample preset click listeners with active chip state
   document.querySelectorAll(".sample-preset-btn").forEach(btn => {
     btn.addEventListener("click", () => {
+      document.querySelectorAll(".sample-preset-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
       const presetKey = btn.getAttribute("data-preset");
       const preset = samplePresets[presetKey];
       if (preset) {
         document.getElementById("quickSubjectInput").value = preset.subject;
         document.getElementById("quickDocTitleInput").value = preset.title;
-        document.getElementById("quickStudyMaterialInput").value = preset.text;
+        const inputArea = document.getElementById("quickStudyMaterialInput");
+        if (inputArea) {
+          inputArea.value = preset.text;
+          updateQuickInputStats(preset.text);
+        }
         Toast.info(`Loaded sample: ${preset.subject}`);
       }
     });

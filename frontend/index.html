@@ -4,26 +4,49 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>StudyGen AI — Full-Stack AI Study Assistant</title>
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/quiz.css">
+  
+  <!-- Modern Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/quiz.css">
 </head>
 <body>
 
+  <!-- Ambient High-Tech Atmospheric Glow & Grid Background -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+  <div class="ambient-grid"></div>
+
+  <!-- Confetti Canvas Overlay for Quiz Completion Celebration -->
+  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
   <!-- Top App Navigation -->
   <header class="app-header">
-    <div class="brand-container" id="brandHomeLink" title="StudyGen AI — Click to go Home, Double-Click to Refresh Data" style="cursor: pointer;">
-      <div class="brand-icon">📚</div>
-      <span class="brand-title">StudyGen AI</span>
+    <div class="brand-container" id="brandHomeLink" title="StudyGen AI — Click to go Home, Double-Click to Sync Data">
+      <div class="brand-icon">
+        <span class="brand-emoji">✨</span>
+      </div>
+      <div class="brand-text-col">
+        <span class="brand-title">StudyGen<span class="brand-title-accent">.AI</span></span>
+        <span class="brand-subtitle">Smart Study Suite</span>
+      </div>
     </div>
 
     <nav class="nav-links">
+      <a href="#" class="nav-link active" id="navHomeLink">Home</a>
       <a href="#" class="nav-link" id="navDashboardLink">Dashboard</a>
     </nav>
 
     <div class="header-actions">
-      <button class="btn btn-secondary btn-sm" id="headerReloadBtn" title="Sync & Refresh All Data">🔄 Refresh</button>
-      <div class="ai-status-pill" id="aiStatusBadge" title="Current AI Provider Configuration">
-        <span class="status-dot" id="aiStatusDot"></span>
+      <button class="btn btn-secondary btn-sm btn-icon-pulse" id="headerReloadBtn" title="Sync & Refresh All Data">
+        <span class="reload-icon">🔄</span> Sync
+      </button>
+      <div class="ai-status-pill" id="aiStatusBadge" title="Active AI Provider Configuration">
+        <span class="status-dot pulsing" id="aiStatusDot"></span>
         <span id="aiStatusText">AI: Initializing...</span>
       </div>
       <div id="userNavSection"></div>
@@ -36,80 +59,204 @@
     <!-- 1. LANDING PAGE VIEW -->
     <section id="view-landing" class="view-section view-container">
       <div class="landing-hero">
-        <div class="badge-tag">⚡ Intelligent Exam & Study Preparation Platform</div>
-        <h1 class="landing-title">Turn your study material into <br><span class="gradient-text">smarter preparation.</span></h1>
-        <p class="landing-subtitle">
-          Upload lecture notes, textbook excerpts, or paste syllabus materials. StudyGen AI extracts executive summaries, curated exam topics, auto-generated question papers, and interactive quizzes with instant grading.
-        </p>
-        <div class="landing-cta-group">
-          <button class="btn btn-primary btn-lg" id="landingCtaStart">Open Dashboard →</button>
-          <button class="btn btn-secondary btn-lg" id="landingCtaDemo">⚡ Explore Demo Project (One-Click)</button>
+        
+        <div class="badge-tag shimmer-badge">
+          <span class="badge-sparkle">✨</span>
+          <span>Powered by Google Gemini 2.5 Flash</span>
+          <span class="badge-divider">•</span>
+          <span class="badge-highlight">100% Free & Open</span>
         </div>
 
-        <!-- Instant AI Study Generator Card -->
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-medium); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-md); text-align: left; margin-top: 16px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+        <h1 class="landing-title">
+          Turn your study notes into <br>
+          <span class="gradient-text animated-gradient">exam mastery.</span>
+        </h1>
+        
+        <p class="landing-subtitle">
+          Upload PDF textbooks, lecture notes, or paste study materials. StudyGen AI instantly synthesizes executive summaries, pinpoints high-yield exam topics, creates calibrated question papers, and launches interactive quizzes.
+        </p>
+
+        <div class="landing-cta-group">
+          <button class="btn btn-primary btn-lg btn-glow" id="landingCtaStart">
+            Open Studio Dashboard <span class="btn-arrow">→</span>
+          </button>
+          <button class="btn btn-secondary btn-lg btn-glass" id="landingCtaDemo">
+            ⚡ Explore Interactive Demo
+          </button>
+        </div>
+
+        <!-- Futuristic AI Study Studio Console Card -->
+        <div class="studio-card">
+          <div class="studio-card-header">
             <div>
-              <h2 style="font-size: 1.35rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-                <span>🚀</span> Instant Study Kit Generator
+              <div class="studio-badge">AI STUDY CONSOLE</div>
+              <h2 class="studio-title">
+                <span class="studio-title-icon">🚀</span> Instant Study Kit Generator
               </h2>
-              <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px;">Paste any notes below or pick a sample to generate summaries, exam topics, and an interactive quiz in seconds.</p>
+              <p class="studio-desc">Paste notes below or select a sample preset to generate instant summaries, critical exam topics, and an interactive quiz.</p>
             </div>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Try Sample:</span>
-              <button type="button" class="btn btn-secondary btn-sm sample-preset-btn" data-preset="wsn">📡 IoT Networks</button>
-              <button type="button" class="btn btn-secondary btn-sm sample-preset-btn" data-preset="ai">🤖 AI & ML</button>
-              <button type="button" class="btn btn-secondary btn-sm sample-preset-btn" data-preset="bio">🧬 Genetics</button>
+            <div class="presets-container">
+              <span class="presets-label">Quick Samples:</span>
+              <div class="presets-chips">
+                <button type="button" class="preset-chip active sample-preset-btn" data-preset="wsn">📡 IoT Networks</button>
+                <button type="button" class="preset-chip sample-preset-btn" data-preset="ai">🤖 AI & ML</button>
+                <button type="button" class="preset-chip sample-preset-btn" data-preset="bio">🧬 Genetics</button>
+              </div>
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
-            <input type="text" id="quickSubjectInput" placeholder="Subject / Course Name (e.g. Computer Science)" value="IoT & Networking" style="width: 100%;">
-            <input type="text" id="quickDocTitleInput" placeholder="Document Title (e.g. Wireless Sensor Networks Notes)" value="WSN_Lecture_Notes.txt" style="width: 100%;">
+          <div class="studio-grid-inputs">
+            <div class="input-field-group">
+              <label class="input-field-label">Subject / Course Domain</label>
+              <input type="text" id="quickSubjectInput" class="studio-input" placeholder="e.g. Computer Science & IoT" value="IoT & Networking">
+            </div>
+            <div class="input-field-group">
+              <label class="input-field-label">Document / Topic Title</label>
+              <input type="text" id="quickDocTitleInput" class="studio-input" placeholder="e.g. Wireless Sensor Networks Overview" value="WSN_Lecture_Notes.txt">
+            </div>
           </div>
 
-          <textarea id="quickStudyMaterialInput" placeholder="Paste your syllabus notes, textbook chapter excerpt, or lecture transcripts here (minimum 20 characters)..." style="width: 100%; height: 160px; resize: vertical; margin-bottom: 14px;"></textarea>
+          <div class="studio-textarea-wrapper">
+            <textarea id="quickStudyMaterialInput" class="studio-textarea" placeholder="Paste your syllabus notes, textbook chapter excerpt, or lecture transcripts here (minimum 20 characters)..."></textarea>
+            <div class="studio-textarea-footer">
+              <div class="input-stats-badge" id="quickInputStats">
+                <span id="charCountDisplay">0 characters</span>
+                <span class="stat-dot">•</span>
+                <span id="readTimeDisplay">~0 min read</span>
+              </div>
+              <div class="studio-shortcuts-hint">Tip: Works great with PDF notes & chapters</div>
+            </div>
+          </div>
 
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-            <div style="display: flex; gap: 18px; font-size: 0.9rem; color: var(--text-secondary);">
-              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                <input type="checkbox" id="quickCheckSummary" checked> AI Summary
+          <div class="studio-action-bar">
+            <div class="studio-options-row">
+              <label class="studio-checkbox-label">
+                <input type="checkbox" id="quickCheckSummary" checked>
+                <span class="checkbox-custom"></span>
+                <span>📑 AI Summary</span>
               </label>
-              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                <input type="checkbox" id="quickCheckTopics" checked> Key Exam Topics
+              <label class="studio-checkbox-label">
+                <input type="checkbox" id="quickCheckTopics" checked>
+                <span class="checkbox-custom"></span>
+                <span>🎯 Key Topics</span>
               </label>
-              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                <input type="checkbox" id="quickCheckQuiz" checked> 5-Question Quiz
+              <label class="studio-checkbox-label">
+                <input type="checkbox" id="quickCheckQuiz" checked>
+                <span class="checkbox-custom"></span>
+                <span>⚡ 5-Question Quiz</span>
               </label>
             </div>
-            <button type="button" class="btn btn-primary btn-lg" id="quickGenerateStudyKitBtn" style="padding: 12px 28px;">
-              ⚡ Generate Complete Study Kit
+            
+            <button type="button" class="btn btn-primary btn-lg btn-sparkle" id="quickGenerateStudyKitBtn">
+              <span class="sparkle-stars">✨</span> Generate Complete Study Kit
             </button>
           </div>
         </div>
+
+        <!-- Interactive Live Feature Preview Showcase Widget -->
+        <div class="live-demo-showcase" id="landingLiveDemoWidget">
+          <div class="showcase-header">
+            <div class="showcase-tabs-nav">
+              <button type="button" class="showcase-tab-btn active" data-tab="summary">📑 Executive Summary Preview</button>
+              <button type="button" class="showcase-tab-btn" data-tab="topics">🎯 High-Yield Exam Topics</button>
+              <button type="button" class="showcase-tab-btn" data-tab="quiz">🚀 Interactive Quiz Preview</button>
+            </div>
+            <span class="live-pill"><span class="live-dot"></span> Live Interactive Preview</span>
+          </div>
+
+          <!-- Preview Pane 1: Summary -->
+          <div class="showcase-tab-content active" id="previewPaneSummary">
+            <div class="demo-summary-box">
+              <div class="demo-summary-title">Summary: Wireless Sensor Networks (WSN) Architecture</div>
+              <p class="demo-summary-text">
+                Wireless Sensor Networks consist of spatially distributed autonomous sensors that monitor physical or environmental conditions. Key constraints include restricted energy reserves, limited computational throughput, and harsh wireless propagation channels.
+              </p>
+              <div class="demo-concept-cloud">
+                <span class="concept-chip">Sensor Nodes</span>
+                <span class="concept-chip">LEACH Clustering</span>
+                <span class="concept-chip">Energy Constraints</span>
+                <span class="concept-chip">Ad-Hoc Routing</span>
+                <span class="concept-chip">Data Aggregation</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Pane 2: Topics -->
+          <div class="showcase-tab-content" id="previewPaneTopics" style="display: none;">
+            <div class="demo-topics-grid">
+              <div class="demo-topic-card priority-critical">
+                <div class="demo-topic-header">
+                  <span class="badge-priority-critical">CRITICAL RELEVANCE</span>
+                  <span class="topic-weight">Exam Frequency: 95%</span>
+                </div>
+                <h4 class="demo-topic-name">LEACH Protocol & Cluster-Head Rotation</h4>
+                <p class="demo-topic-desc">Distributed clustering algorithm where nodes randomly rotate cluster head roles to distribute energy dissipation evenly.</p>
+              </div>
+              <div class="demo-topic-card priority-high">
+                <div class="demo-topic-header">
+                  <span class="badge-priority-high">HIGH RELEVANCE</span>
+                  <span class="topic-weight">Exam Frequency: 80%</span>
+                </div>
+                <h4 class="demo-topic-name">Data Aggregation & Sleep-Wake Schedules</h4>
+                <p class="demo-topic-desc">Techniques to minimize redundant wireless transmissions by computing summaries at intermediate nodes.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Pane 3: Quiz -->
+          <div class="showcase-tab-content" id="previewPaneQuiz" style="display: none;">
+            <div class="demo-quiz-preview-card">
+              <div class="demo-quiz-header">
+                <span class="badge-difficulty">Medium Difficulty</span>
+                <span class="badge-marks">2 Marks</span>
+              </div>
+              <div class="demo-quiz-question">What is the primary constraint governing the operational lifetime of WSN sensor nodes?</div>
+              <div class="demo-quiz-options">
+                <div class="demo-quiz-opt" onclick="this.classList.toggle('selected')">
+                  <span class="opt-key">A</span> Optical transmission bandwidth
+                </div>
+                <div class="demo-quiz-opt demo-quiz-correct" onclick="this.classList.toggle('selected')">
+                  <span class="opt-key">B</span> Finite battery energy reserve and battery replacement infeasibility
+                </div>
+                <div class="demo-quiz-opt" onclick="this.classList.toggle('selected')">
+                  <span class="opt-key">C</span> Maximum operating clock frequency of microcontrollers
+                </div>
+              </div>
+              <div class="demo-quiz-hint">💡 Click options above to experience the interactive feedback styling!</div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Features Showcase Grid -->
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">📑</div>
-          <h3>Structured Summaries</h3>
-          <p>Comprehensive overviews, key concept extraction, and bulleted quick-revision notes grounded directly in your source documents.</p>
+      <!-- Features Showcase Bento Grid -->
+      <div class="features-bento-grid">
+        <div class="bento-card bento-card-gradient">
+          <div class="bento-icon-wrapper icon-purple">📑</div>
+          <h3>Structured Executive Summaries</h3>
+          <p>Comprehensive overviews, key concept badges, and bulleted quick-revision notes grounded directly in your uploaded source materials.</p>
+          <div class="bento-badge">Multi-Modal AI</div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🎯</div>
+
+        <div class="bento-card">
+          <div class="bento-icon-wrapper icon-amber">🎯</div>
           <h3>Important Exam Topics</h3>
-          <p>Prioritized study cards categorized by Critical, High, and Medium relevance with related concepts to target revision efficiently.</p>
+          <p>Prioritized study cards categorized by Critical, High, and Medium relevance with related concept tags to target your revision efficiently.</p>
+          <div class="bento-badge">Priority Ranked</div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">📝</div>
-          <h3>Question Paper Generator</h3>
-          <p>Generate customized question papers configured by difficulty, total marks, and formats including MCQ, short answer, and long answer.</p>
+
+        <div class="bento-card">
+          <div class="bento-icon-wrapper icon-cyan">📝</div>
+          <h3>Custom Question Paper Generator</h3>
+          <p>Generate customized tests configured by difficulty, total marks, and formats including MCQ, short answer, and long answer questions.</p>
+          <div class="bento-badge">Configurable</div>
         </div>
-        <div class="feature-card">
-          <div class="feature-icon">🚀</div>
-          <h3>Interactive Quiz Mode</h3>
-          <p>Real-time quiz engine with one-at-a-time questions, instant verification, explanations from your notes, and performance tracking.</p>
+
+        <div class="bento-card bento-card-highlight">
+          <div class="bento-icon-wrapper icon-emerald">🚀</div>
+          <h3>Interactive Quiz Engine</h3>
+          <p>Real-time quiz engine with one-at-a-time viewport, instant answer validation, source explanations, and celebration analytics.</p>
+          <div class="bento-badge">Instant Feedback</div>
         </div>
       </div>
     </section>
@@ -118,50 +265,78 @@
     <section id="view-dashboard" class="view-section view-container" style="display: none;">
       <div class="dashboard-header">
         <div>
-          <h1 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 6px;">Study Projects</h1>
-          <p style="color: var(--text-secondary); font-size: 0.95rem;">Manage your subjects, lecture documents, and generated assessments.</p>
+          <div class="section-tag">WORKSPACE</div>
+          <h1 class="page-title">Study Projects</h1>
+          <p class="page-subtitle">Manage your subjects, documents, and generated assessments.</p>
         </div>
-        <div style="display: flex; gap: 10px;">
-          <button class="btn btn-secondary" id="dashboardRefreshBtn" title="Sync and refresh all projects">🔄 Sync</button>
-          <button class="btn btn-primary" onclick="Modal.open('newProjectModal')">+ New Study Project</button>
+        <div class="dashboard-actions">
+          <button class="btn btn-secondary" id="dashboardRefreshBtn" title="Sync and refresh all projects">
+            🔄 Refresh Sync
+          </button>
+          <button class="btn btn-primary btn-glow" onclick="Modal.open('newProjectModal')">
+            + New Study Project
+          </button>
         </div>
       </div>
 
-      <!-- Quick Statistics (4 cards) -->
+      <!-- Modern Quick Statistics Grid (4 cards with glowing icon wrappers) -->
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="stat-label">Total Projects</div>
-          <div class="stat-value" id="statTotalProjects">0</div>
+          <div class="stat-icon-wrapper stat-icon-indigo">📁</div>
+          <div class="stat-content">
+            <div class="stat-label">Total Projects</div>
+            <div class="stat-value" id="statTotalProjects">0</div>
+            <div class="stat-subtext">Active Subjects</div>
+          </div>
         </div>
+
         <div class="stat-card">
-          <div class="stat-label">Documents Analyzed</div>
-          <div class="stat-value" id="statTotalDocs">0</div>
+          <div class="stat-icon-wrapper stat-icon-cyan">📑</div>
+          <div class="stat-content">
+            <div class="stat-label">Documents Analyzed</div>
+            <div class="stat-value" id="statTotalDocs">0</div>
+            <div class="stat-subtext">PDFs & Notes</div>
+          </div>
         </div>
+
         <div class="stat-card">
-          <div class="stat-label">Question Papers</div>
-          <div class="stat-value" id="statTotalPapers">0</div>
+          <div class="stat-icon-wrapper stat-icon-amber">📝</div>
+          <div class="stat-content">
+            <div class="stat-label">Question Papers</div>
+            <div class="stat-value" id="statTotalPapers">0</div>
+            <div class="stat-subtext">Calibrated Tests</div>
+          </div>
         </div>
+
         <div class="stat-card">
-          <div class="stat-label">Practice Quizzes</div>
-          <div class="stat-value" id="statTotalQuizzes">0</div>
+          <div class="stat-icon-wrapper stat-icon-emerald">⚡</div>
+          <div class="stat-content">
+            <div class="stat-label">Practice Quizzes</div>
+            <div class="stat-value" id="statTotalQuizzes">0</div>
+            <div class="stat-subtext">Active Recalls</div>
+          </div>
         </div>
       </div>
 
-      <!-- Interactive Dashboard Toolbar -->
-      <div class="dashboard-toolbar" style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; align-items: center; justify-content: space-between; background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 14px 18px; border-radius: var(--radius-md);">
-        <div style="flex: 1; min-width: 240px; position: relative;">
-          <input type="text" id="dashboardSearchInput" placeholder="🔍 Search projects by title, subject, or notes..." style="width: 100%;">
+      <!-- Interactive Search & Command Filter Bar -->
+      <div class="dashboard-toolbar">
+        <div class="search-box-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="dashboardSearchInput" placeholder="Search projects by title, subject, or notes... (Ctrl + K)" class="search-input">
+          <span class="search-kbd-hint">Ctrl K</span>
         </div>
-        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <label style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Subject:</label>
-            <select id="dashboardSubjectFilter" style="padding: 8px 12px; font-size: 0.9rem;">
+
+        <div class="filter-controls-group">
+          <div class="filter-group">
+            <label class="filter-label">Subject:</label>
+            <select id="dashboardSubjectFilter" class="filter-select">
               <option value="">All Subjects</option>
             </select>
           </div>
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <label style="font-size: 0.85rem; color: var(--text-secondary); font-weight: 600;">Sort:</label>
-            <select id="dashboardSortSelect" style="padding: 8px 12px; font-size: 0.9rem;">
+
+          <div class="filter-group">
+            <label class="filter-label">Sort:</label>
+            <select id="dashboardSortSelect" class="filter-select">
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>
               <option value="name">Name (A-Z)</option>
@@ -169,36 +344,47 @@
               <option value="docs">Most Documents</option>
             </select>
           </div>
-          <button class="btn btn-secondary btn-sm" id="dashboardClearFiltersBtn" style="font-size: 0.85rem;">Clear</button>
+
+          <button class="btn btn-secondary btn-sm" id="dashboardClearFiltersBtn">Clear</button>
         </div>
       </div>
 
       <!-- Active Filters Counter -->
-      <div id="dashboardFilterCount" style="margin-bottom: 16px; font-size: 0.9rem; color: var(--text-secondary); display: none;"></div>
+      <div id="dashboardFilterCount" class="filter-count-badge" style="display: none;"></div>
 
       <!-- Projects Grid -->
       <div class="projects-grid" id="projectsContainer"></div>
     </section>
+
     <!-- 3. PROJECT WORKSPACE VIEW -->
     <section id="view-project" class="view-section view-container" style="display: none;">
       <!-- Breadcrumb & Header -->
-      <div style="margin-bottom: 24px;">
-        <button class="btn btn-secondary btn-sm" id="backToDashboardBtn" style="margin-bottom: 16px;">← Back to Projects</button>
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+      <div class="workspace-header-bar">
+        <button class="btn btn-secondary btn-sm btn-back" id="backToDashboardBtn">
+          ← Back to Projects
+        </button>
+        
+        <div class="workspace-title-row">
           <div>
-            <span class="project-badge" id="projectSubjectHeader">Subject</span>
-            <h1 id="projectTitleHeader" style="font-size: 2rem; font-weight: 800; margin-bottom: 6px;">Project Title</h1>
-            <p id="projectDescHeader" style="color: var(--text-secondary); font-size: 0.95rem; max-width: 700px;"></p>
+            <div class="workspace-subject-pill" id="projectSubjectHeader">Subject</div>
+            <h1 id="projectTitleHeader" class="workspace-title">Project Title</h1>
+            <p id="projectDescHeader" class="workspace-desc"></p>
           </div>
-          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <button class="btn btn-secondary" id="btnGenerateAllStudyKit">⚡ Generate All (Summary + Topics + Quiz)</button>
-            <button class="btn btn-primary" onclick="Modal.open('generatePaperModal')">📝 Generate Question Paper</button>
-            <button class="btn btn-danger btn-sm" id="deleteProjectBtn">Delete Project</button>
+          <div class="workspace-action-buttons">
+            <button class="btn btn-secondary" id="btnGenerateAllStudyKit">
+              ⚡ Generate All (Summary + Topics + Quiz)
+            </button>
+            <button class="btn btn-primary btn-glow" onclick="Modal.open('generatePaperModal')">
+              📝 Generate Question Paper
+            </button>
+            <button class="btn btn-danger btn-sm" id="deleteProjectBtn">
+              Delete Project
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Tab Navigation -->
+      <!-- Modern Segmented Tab Navigation -->
       <div class="tab-navigation">
         <button class="tab-btn active" data-tab="material">📚 Study Material</button>
         <button class="tab-btn" data-tab="summary">📑 AI Summary</button>
@@ -209,81 +395,89 @@
 
       <!-- Tab 1: Study Material -->
       <div id="tab-material" class="tab-pane active">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;">
+        <div class="materials-input-grid">
           <!-- Paste Text Card -->
-          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px;">
-            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 14px;">Paste Study Notes</h3>
-            <input type="text" id="pastedMaterialTitle" placeholder="Title (e.g. Chapter 3 Notes.txt)" style="width: 100%; margin-bottom: 12px;">
-            <textarea id="pastedMaterialInput" placeholder="Paste your lecture notes, textbook excerpt, or study guide text here..." style="width: 100%; height: 180px; resize: vertical; margin-bottom: 12px;"></textarea>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span id="pasteCharCounter" style="font-size: 0.8rem; color: var(--text-muted);">0 characters</span>
+          <div class="material-card">
+            <div class="card-header-clean">
+              <h3 class="card-clean-title">✍️ Paste Study Notes</h3>
+              <span class="card-clean-subtitle">Direct syllabus text or lecture notes</span>
+            </div>
+            <input type="text" id="pastedMaterialTitle" class="studio-input" placeholder="Title (e.g. Chapter 3 Notes.txt)" style="margin-bottom: 12px;">
+            <textarea id="pastedMaterialInput" class="studio-textarea" placeholder="Paste your lecture notes, textbook excerpt, or study guide text here..." style="height: 180px;"></textarea>
+            <div class="material-footer-row">
+              <span id="pasteCharCounter" class="char-counter-text">0 characters</span>
               <button class="btn btn-primary btn-sm" id="savePastedMaterialBtn">Add to Project</button>
             </div>
           </div>
 
           <!-- Upload File Card -->
-          <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 24px; display: flex; flex-direction: column;">
-            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 14px;">Upload Document (.pdf, .txt, .md)</h3>
-            <div id="fileDropZone" style="flex: 1; border: 2px dashed var(--border-medium); border-radius: var(--radius-md); background: var(--bg-input); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; text-align: center; cursor: pointer;">
-              <div style="font-size: 2.2rem; margin-bottom: 12px;">📁</div>
-              <p style="font-size: 0.95rem; font-weight: 600; margin-bottom: 6px;">Drag and drop PDF, TXT, or MD files here</p>
-              <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px;">PDF textbooks, lecture slides & notes up to 10MB</p>
-              <label for="fileUploadInput" class="btn btn-secondary btn-sm" style="cursor: pointer;">Browse Files</label>
+          <div class="material-card">
+            <div class="card-header-clean">
+              <h3 class="card-clean-title">📁 Upload Document</h3>
+              <span class="card-clean-subtitle">Supports PDF, TXT, and Markdown files</span>
+            </div>
+            <div id="fileDropZone" class="file-drop-zone">
+              <div class="drop-icon-anim">📄</div>
+              <p class="drop-title">Drag & drop PDF, TXT, or MD files here</p>
+              <p class="drop-subtitle">PDF textbooks, lecture slides & notes up to 10MB</p>
+              <label for="fileUploadInput" class="btn btn-secondary btn-sm drop-browse-btn">
+                Browse Files
+              </label>
               <input type="file" id="fileUploadInput" accept=".pdf,.txt,.md,application/pdf,text/plain" style="display: none;">
             </div>
           </div>
         </div>
 
         <!-- Document List -->
-        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px;">Uploaded Documents</h3>
+        <h3 class="sub-heading">Uploaded Documents</h3>
         <div id="documentsListContainer"></div>
       </div>
 
       <!-- Tab 2: AI Summary -->
       <div id="tab-summary" class="tab-pane">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <label style="font-size: 0.9rem; font-weight: 600;">Source Document:</label>
-            <select id="summaryDocSelector" style="min-width: 260px;"></select>
+        <div class="tab-action-header">
+          <div class="source-selector-wrapper">
+            <label class="field-label">Source Document:</label>
+            <select id="summaryDocSelector" class="studio-select" style="min-width: 260px;"></select>
           </div>
-          <button class="btn btn-primary" id="btnGenerateSummary">⚡ Generate AI Summary</button>
+          <button class="btn btn-primary btn-glow" id="btnGenerateSummary">⚡ Generate AI Summary</button>
         </div>
         <div id="summaryContentContainer"></div>
       </div>
 
       <!-- Tab 3: Important Topics -->
       <div id="tab-topics" class="tab-pane">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <label style="font-size: 0.9rem; font-weight: 600;">Source Document:</label>
-            <select id="topicsDocSelector" style="min-width: 260px;"></select>
+        <div class="tab-action-header">
+          <div class="source-selector-wrapper">
+            <label class="field-label">Source Document:</label>
+            <select id="topicsDocSelector" class="studio-select" style="min-width: 260px;"></select>
           </div>
-          <button class="btn btn-primary" id="btnGenerateTopics">🎯 Extract Important Topics</button>
+          <button class="btn btn-primary btn-glow" id="btnGenerateTopics">🎯 Extract Important Topics</button>
         </div>
         <div class="topics-grid" id="topicsGridContainer"></div>
       </div>
 
       <!-- Tab 4: Question Papers -->
       <div id="tab-papers" class="tab-pane">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-          <h2 style="font-size: 1.3rem; font-weight: 700;">Generated Question Papers</h2>
-          <button class="btn btn-primary" onclick="Modal.open('generatePaperModal')">+ New Question Paper</button>
+        <div class="tab-action-header">
+          <h2 class="sub-heading" style="margin: 0;">Generated Question Papers</h2>
+          <button class="btn btn-primary btn-glow" onclick="Modal.open('generatePaperModal')">+ New Question Paper</button>
         </div>
         <div id="questionPapersContainer"></div>
       </div>
 
       <!-- Tab 5: Generation History -->
       <div id="tab-history" class="tab-pane">
-        <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 16px;">AI Generation Audit Trail</h2>
-        <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left;">
+        <h2 class="sub-heading">AI Generation Audit Trail</h2>
+        <div class="table-container-card">
+          <table class="modern-table">
             <thead>
-              <tr style="background: var(--bg-surface-elevated); border-bottom: 1px solid var(--border-medium); font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">
-                <th style="padding: 12px 16px;">Task</th>
-                <th style="padding: 12px 16px;">Model Used</th>
-                <th style="padding: 12px 16px;">Status</th>
-                <th style="padding: 12px 16px;">Details</th>
-                <th style="padding: 12px 16px;">Timestamp</th>
+              <tr>
+                <th>Task</th>
+                <th>Model Used</th>
+                <th>Status</th>
+                <th>Details</th>
+                <th>Timestamp</th>
               </tr>
             </thead>
             <tbody id="historyTableBody"></tbody>
@@ -291,6 +485,7 @@
         </div>
       </div>
     </section>
+
     <!-- 4. INTERACTIVE QUIZ VIEW -->
     <section id="view-quiz" class="view-section view-container" style="display: none;">
       <div class="quiz-container">
@@ -321,8 +516,8 @@
           <div class="quiz-controls">
             <button class="btn btn-secondary btn-sm" id="quizExitBtn">✕ Exit Quiz</button>
             <div style="display: flex; gap: 12px;">
-              <button class="btn btn-primary" id="quizSubmitAnswerBtn">Submit Answer</button>
-              <button class="btn btn-primary" id="quizNextQuestionBtn" style="display: none;">Next Question →</button>
+              <button class="btn btn-primary btn-glow" id="quizSubmitAnswerBtn">Submit Answer</button>
+              <button class="btn btn-primary btn-glow" id="quizNextQuestionBtn" style="display: none;">Next Question →</button>
             </div>
           </div>
         </div>
@@ -330,9 +525,9 @@
         <!-- Quiz Final Result View -->
         <div id="quizResultSection" style="display: none;">
           <div class="quiz-result-card">
-            <div class="result-icon">🏆</div>
+            <div class="result-icon-glow">🏆</div>
             <h1 class="result-title">Quiz Completed!</h1>
-            <p class="result-subtitle">Great job reviewing your study material.</p>
+            <p class="result-subtitle">Great performance analyzing and recalling your study material.</p>
 
             <div class="result-score-circle">
               <div class="score-percent" id="quizScorePercent">80%</div>
@@ -356,7 +551,7 @@
 
             <div class="result-actions">
               <button class="btn btn-secondary" id="quizResultReturnBtn">← Return to Project</button>
-              <button class="btn btn-primary" id="quizResultRetakeBtn">🔄 Retake Quiz</button>
+              <button class="btn btn-primary btn-glow" id="quizResultRetakeBtn">🔄 Retake Quiz</button>
             </div>
 
             <div class="result-review-list">
@@ -376,27 +571,27 @@
   <div class="modal-backdrop" id="newProjectModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 style="font-size: 1.2rem; font-weight: 700;">Create Study Project</h3>
-        <button onclick="Modal.close('newProjectModal')" style="font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+        <h3 class="modal-title">Create Study Project</h3>
+        <button onclick="Modal.close('newProjectModal')" class="modal-close-btn">&times;</button>
       </div>
       <form id="newProjectForm">
-        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Project Name *</label>
-            <input type="text" id="newProjName" placeholder="e.g. Wireless Sensor Networks" required style="width: 100%;">
+        <div class="modal-body">
+          <div class="input-group">
+            <label class="input-label">Project Name *</label>
+            <input type="text" id="newProjName" class="studio-input" placeholder="e.g. Wireless Sensor Networks" required>
           </div>
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Subject *</label>
-            <input type="text" id="newProjSubject" placeholder="e.g. IoT / Computer Science" required style="width: 100%;">
+          <div class="input-group">
+            <label class="input-label">Subject Domain *</label>
+            <input type="text" id="newProjSubject" class="studio-input" placeholder="e.g. IoT / Computer Science" required>
           </div>
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Description</label>
-            <textarea id="newProjDesc" placeholder="Brief notes on what this project covers..." style="width: 100%; height: 80px; resize: vertical;"></textarea>
+          <div class="input-group">
+            <label class="input-label">Description / Scope</label>
+            <textarea id="newProjDesc" class="studio-textarea" placeholder="Brief notes on what this course covers..." style="height: 80px;"></textarea>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="Modal.close('newProjectModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Create Project</button>
+          <button type="submit" class="btn btn-primary btn-glow">Create Project</button>
         </div>
       </form>
     </div>
@@ -406,37 +601,37 @@
   <div class="modal-backdrop" id="generatePaperModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 style="font-size: 1.2rem; font-weight: 700;">Configure Question Paper</h3>
-        <button onclick="Modal.close('generatePaperModal')" style="font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+        <h3 class="modal-title">Configure Question Paper</h3>
+        <button onclick="Modal.close('generatePaperModal')" class="modal-close-btn">&times;</button>
       </div>
       <form id="generatePaperForm">
-        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Paper Title</label>
-            <input type="text" id="qpTitleInput" placeholder="Midterm Practice Test" style="width: 100%;">
+        <div class="modal-body">
+          <div class="input-group">
+            <label class="input-label">Paper Title</label>
+            <input type="text" id="qpTitleInput" class="studio-input" placeholder="Midterm Practice Assessment">
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-            <div>
-              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Number of Questions</label>
-              <input type="number" id="qpNumQuestionsInput" value="5" min="1" max="25" style="width: 100%;">
+          <div class="grid-2-cols">
+            <div class="input-group">
+              <label class="input-label">Number of Questions</label>
+              <input type="number" id="qpNumQuestionsInput" class="studio-input" value="5" min="1" max="25">
             </div>
-            <div>
-              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Total Marks</label>
-              <input type="number" id="qpTotalMarksInput" value="25" min="5" max="100" style="width: 100%;">
+            <div class="input-group">
+              <label class="input-label">Total Marks</label>
+              <input type="number" id="qpTotalMarksInput" class="studio-input" value="25" min="5" max="100">
             </div>
           </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-            <div>
-              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Difficulty</label>
-              <select id="qpDifficultyInput" style="width: 100%;">
+          <div class="grid-2-cols">
+            <div class="input-group">
+              <label class="input-label">Difficulty</label>
+              <select id="qpDifficultyInput" class="studio-select">
                 <option value="Easy">Easy</option>
                 <option value="Medium" selected>Medium</option>
                 <option value="Hard">Hard</option>
               </select>
             </div>
-            <div>
-              <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Question Type</label>
-              <select id="qpTypeInput" style="width: 100%;">
+            <div class="input-group">
+              <label class="input-label">Question Type</label>
+              <select id="qpTypeInput" class="studio-select">
                 <option value="MCQ" selected>Multiple Choice (MCQ)</option>
                 <option value="Short Answer">Short Answer</option>
                 <option value="Long Answer">Long Answer</option>
@@ -444,14 +639,14 @@
               </select>
             </div>
           </div>
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Suggested Duration (Minutes)</label>
-            <input type="number" id="qpDurationInput" value="30" min="5" max="180" style="width: 100%;">
+          <div class="input-group">
+            <label class="input-label">Duration (Minutes)</label>
+            <input type="number" id="qpDurationInput" class="studio-input" value="30" min="5" max="180">
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="Modal.close('generatePaperModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Generate Questions ⚡</button>
+          <button type="submit" class="btn btn-primary btn-glow">Generate Questions ⚡</button>
         </div>
       </form>
     </div>
@@ -461,23 +656,23 @@
   <div class="modal-backdrop" id="loginModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 style="font-size: 1.2rem; font-weight: 700;">Log In to StudyGen AI</h3>
-        <button onclick="Modal.close('loginModal')" style="font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+        <h3 class="modal-title">Log In to StudyGen AI</h3>
+        <button onclick="Modal.close('loginModal')" class="modal-close-btn">&times;</button>
       </div>
       <form id="loginForm">
-        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Email</label>
-            <input type="email" id="loginEmail" required placeholder="student@example.com" style="width: 100%;">
+        <div class="modal-body">
+          <div class="input-group">
+            <label class="input-label">Email</label>
+            <input type="email" id="loginEmail" class="studio-input" required placeholder="student@example.com">
           </div>
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Password</label>
-            <input type="password" id="loginPassword" required placeholder="••••••••" style="width: 100%;">
+          <div class="input-group">
+            <label class="input-label">Password</label>
+            <input type="password" id="loginPassword" class="studio-input" required placeholder="••••••••">
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="Modal.close('loginModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Log In</button>
+          <button type="submit" class="btn btn-primary btn-glow">Log In</button>
         </div>
       </form>
     </div>
@@ -487,27 +682,27 @@
   <div class="modal-backdrop" id="registerModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3 style="font-size: 1.2rem; font-weight: 700;">Create Account</h3>
-        <button onclick="Modal.close('registerModal')" style="font-size: 1.3rem; color: var(--text-muted);">&times;</button>
+        <h3 class="modal-title">Create Free Account</h3>
+        <button onclick="Modal.close('registerModal')" class="modal-close-btn">&times;</button>
       </div>
       <form id="registerForm">
-        <div class="modal-body" style="display: flex; flex-direction: column; gap: 16px;">
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Your Name</label>
-            <input type="text" id="regName" required placeholder="Alex Scholar" style="width: 100%;">
+        <div class="modal-body">
+          <div class="input-group">
+            <label class="input-label">Full Name</label>
+            <input type="text" id="regName" class="studio-input" required placeholder="Rishi Verma">
           </div>
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Email</label>
-            <input type="email" id="regEmail" required placeholder="alex@university.edu" style="width: 100%;">
+          <div class="input-group">
+            <label class="input-label">Email</label>
+            <input type="email" id="regEmail" class="studio-input" required placeholder="student@university.edu">
           </div>
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Password</label>
-            <input type="password" id="regPassword" required minlength="6" placeholder="At least 6 characters" style="width: 100%;">
+          <div class="input-group">
+            <label class="input-label">Password</label>
+            <input type="password" id="regPassword" class="studio-input" required minlength="6" placeholder="At least 6 characters">
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" onclick="Modal.close('registerModal')">Cancel</button>
-          <button type="submit" class="btn btn-primary">Sign Up Free</button>
+          <button type="submit" class="btn btn-primary btn-glow">Sign Up Free</button>
         </div>
       </form>
     </div>
@@ -515,18 +710,23 @@
 
   <!-- Multi-Stage AI Loading Overlay -->
   <div class="ai-loader-overlay" id="aiLoaderOverlay">
-    <div class="spinner-ring"></div>
-    <div class="ai-loader-title">StudyGen AI Working</div>
-    <div class="ai-loader-subtitle" id="aiLoaderSubtitle">Analyzing study material...</div>
+    <div class="ai-loader-content">
+      <div class="spinner-core">
+        <div class="spinner-ring"></div>
+        <div class="spinner-center-sparkle">✨</div>
+      </div>
+      <div class="ai-loader-title">StudyGen AI Engine</div>
+      <div class="ai-loader-subtitle" id="aiLoaderSubtitle">Synthesizing study material with Gemini...</div>
+    </div>
   </div>
 
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Scripts -->
-  <script src="/js/api.js"></script>
-  <script src="/js/state.js"></script>
-  <script src="/js/components.js"></script>
-  <script src="/js/app.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
