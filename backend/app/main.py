@@ -1,4 +1,4 @@
-﻿import os
+import os
 import logging
 from pathlib import Path
 from contextlib import asynccontextmanager
@@ -53,6 +53,16 @@ async def global_exception_handler(request: Request, exc: Exception):
 # Include API routes
 app.include_router(api_router, prefix=settings.API_PREFIX)
 
+# Cache-busting middleware for frontend files
+@app.middleware("http")
+async def add_no_cache_headers(request: Request, call_next):
+    response = await call_next(request)
+    if request.url.path == "/" or request.url.path.startswith("/css") or request.url.path.startswith("/js"):
+        response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        response.headers["Expires"] = "0"
+    return response
+
 # Serve Frontend static assets
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 frontend_dir = BASE_DIR / "frontend"
@@ -69,7 +79,14 @@ if frontend_dir.exists():
     async def serve_index():
         index_file = frontend_dir / "index.html"
         if index_file.exists():
-            return FileResponse(str(index_file))
+            return FileResponse(
+                str(index_file),
+                headers={
+                    "Cache-Control": "no-cache, no-store, must-revalidate, max-age=0",
+                    "Pragma": "no-cache",
+                    "Expires": "0"
+                }
+            )
         return {"message": "StudyGen AI API is running. Frontend index.html not found."}
 
     @app.get("/health", tags=["Health"])

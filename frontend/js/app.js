@@ -23,32 +23,10 @@ async function ensureSession() {
 }
 
 async function initApp() {
-  try {
-    const status = await api.generation.status();
-    appState.setAIStatus(status);
-    updateAIStatusBadge(status);
-  } catch (err) {
-    console.warn("Could not check AI status:", err);
-  }
-
-  try {
-    if (api.token) {
-      const user = await api.auth.me();
-      appState.setUser(user);
-    }
-  } catch (err) {
-    api.setToken(null);
-    appState.setUser(null);
-  }
-
-  // Automatically ensure active guest session if no user is authenticated
-  if (!appState.user) {
-    await ensureSession();
-  }
-
-  updateAuthUI();
+  // 1. Immediately attach all button and form event listeners synchronously
   setupEventListeners();
 
+  // 2. Pre-fill default study material and initialize character gauge immediately
   const quickInput = document.getElementById("quickStudyMaterialInput");
   if (quickInput && !quickInput.value) {
     const defaultText = "Wireless Sensor Networks (WSNs) consist of spatially dispersed autonomous devices called sensor nodes that monitor environmental conditions such as temperature, sound, and pressure. Each node typically comprises a sensing unit, a processing microcontroller, a radio transceiver, and a battery power unit. Energy efficiency is the paramount design constraint in WSNs because nodes are often deployed in inaccessible areas where battery replacement is infeasible. Key routing protocols include Directed Diffusion, LEACH (Low-Energy Adaptive Clustering Hierarchy), and PEGASIS.";
@@ -59,7 +37,38 @@ async function initApp() {
     if (rEl) rEl.textContent = "~2 min read";
   }
 
+  // 3. Immediately render default views so UI is 100% interactive instantly
+  updateAuthUI();
   navigateTo("landing");
+
+  // 4. Background non-blocking session authentication
+  (async () => {
+    try {
+      if (api.token) {
+        const user = await api.auth.me();
+        appState.setUser(user);
+        updateAuthUI();
+      }
+    } catch (err) {
+      api.setToken(null);
+      appState.setUser(null);
+    }
+
+    if (!appState.user) {
+      await ensureSession();
+    }
+  })();
+
+  // 5. Background non-blocking AI status check
+  (async () => {
+    try {
+      const status = await api.generation.status();
+      appState.setAIStatus(status);
+      updateAIStatusBadge(status);
+    } catch (err) {
+      console.warn("Could not check AI status:", err);
+    }
+  })();
 }
 
 function updateAIStatusBadge(status) {
@@ -123,6 +132,13 @@ async function navigateTo(viewName, params = {}) {
   if (activeSec) {
     activeSec.style.display = "block";
   }
+
+  // Active top navigation links styling
+  document.getElementById("navHomeLink")?.classList.toggle("active", viewName === "landing");
+  document.getElementById("navDashboardLink")?.classList.toggle("active", viewName === "dashboard");
+
+  // Scroll to top of window smoothly
+  window.scrollTo({ top: 0, behavior: "smooth" });
 
   if (viewName === "dashboard") {
     await loadDashboardData();
