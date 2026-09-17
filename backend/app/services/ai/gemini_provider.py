@@ -14,9 +14,9 @@ from app.utils.text_processing import truncate_text
 logger = logging.getLogger("studygen.ai.gemini")
 
 class GeminiProvider(BaseAIProvider):
-    def __init__(self, api_key: str = "", model: str = "gemini-2.5-flash"):
+    def __init__(self, api_key: str = "", model: str = "gemini-3.6-flash"):
         self.api_key = api_key.strip()
-        self.model = model.strip() or "gemini-2.5-flash"
+        self.model = model.strip() or "gemini-3.6-flash"
         self.fallback = FallbackAIProvider()
         is_real_key = bool(self.api_key and self.api_key != "your_gemini_api_key_here")
         self.client = genai.Client(api_key=self.api_key) if is_real_key else None

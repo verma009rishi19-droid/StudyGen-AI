@@ -18,7 +18,7 @@ class ApiService {
     }
   }
 
-  async request(endpoint, options = {}) {
+  async request(endpoint, options = {}, isRetry = false) {
     const url = `${API_BASE}${endpoint}`;
     const headers = options.headers || {};
 
@@ -40,6 +40,20 @@ class ApiService {
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
+        if (response.status === 401 && !isRetry && !endpoint.startsWith("/auth/")) {
+          // Token expired or invalid: seamlessly re-authenticate as guest and retry
+          try {
+            const guestRes = await this.auth.guest();
+            this.setToken(guestRes.access_token);
+            if (typeof appState !== "undefined" && appState.setUser) {
+              appState.setUser(guestRes.user);
+            }
+            return await this.request(endpoint, options, true);
+          } catch (recoveryErr) {
+            console.warn("Guest recovery failed:", recoveryErr);
+          }
+        }
+
         if (response.status === 404 && (endpoint.includes("/summaries/document/") || endpoint.includes("/topics/document/"))) {
           return null;
         }
@@ -61,6 +75,7 @@ class ApiService {
   auth = {
     register: (userData) => this.request("/auth/register", { method: "POST", body: JSON.stringify(userData) }),
     login: (credentials) => this.request("/auth/login", { method: "POST", body: JSON.stringify(credentials) }),
+    guest: () => this.request("/auth/guest", { method: "POST" }),
     me: () => this.request("/auth/me")
   };
 

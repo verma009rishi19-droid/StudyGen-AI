@@ -6,6 +6,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   await initApp();
 });
 
+async function ensureSession() {
+  if (appState.user && api.token) {
+    return appState.user;
+  }
+  try {
+    const res = await api.auth.guest();
+    api.setToken(res.access_token);
+    appState.setUser(res.user);
+    updateAuthUI();
+    return res.user;
+  } catch (err) {
+    console.warn("Could not start guest session:", err);
+    return null;
+  }
+}
+
 async function initApp() {
   try {
     const status = await api.generation.status();
@@ -25,6 +41,11 @@ async function initApp() {
     appState.setUser(null);
   }
 
+  // Automatically ensure active guest session if no user is authenticated
+  if (!appState.user) {
+    await ensureSession();
+  }
+
   updateAuthUI();
   setupEventListeners();
 
@@ -38,11 +59,7 @@ async function initApp() {
     if (rEl) rEl.textContent = "~2 min read";
   }
 
-  if (appState.user) {
-    await navigateTo("dashboard");
-  } else {
-    navigateTo("landing");
-  }
+  navigateTo("landing");
 }
 
 function updateAIStatusBadge(status) {
@@ -51,7 +68,7 @@ function updateAIStatusBadge(status) {
   if (!status || !text) return;
 
   const provider = status.active_provider.toUpperCase();
-  let model = status.gemini_model || "gemini-2.5-flash";
+  let model = status.gemini_model || "gemini-3.6-flash";
   if (status.active_provider === "openai") {
     model = status.openai_model;
   } else if (status.active_provider === "ollama") {
@@ -66,29 +83,35 @@ function updateAuthUI() {
   const userSection = document.getElementById("userNavSection");
   if (!userSection) return;
 
-  if (user) {
+  if (user && user.email !== "guest@studygen.ai") {
     userSection.innerHTML = `
       <div style="display: flex; align-items: center; gap: 12px;">
-        <span style="font-size: 0.9rem; color: var(--text-secondary);">👤 ${escapeHtml(user.name)}</span>
+        <span style="font-size: 0.9rem; color: #a5b4fc; font-weight: 600;">👤 ${escapeHtml(user.name)}</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Log out</button>
       </div>
     `;
     document.getElementById("logoutBtn")?.addEventListener("click", handleLogout);
   } else {
     userSection.innerHTML = `
-      <button class="btn btn-secondary btn-sm" id="openLoginBtn">Log in</button>
-      <button class="btn btn-primary btn-sm" id="openRegisterBtn">Sign up</button>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="guest-pill-badge" style="font-size: 0.78rem; font-weight: 700; color: #818cf8; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.35); padding: 4px 10px; border-radius: var(--radius-full);" title="Full access active">
+          🎓 Guest Student
+        </span>
+        <button class="btn btn-secondary btn-sm" id="openLoginBtn">Log in</button>
+        <button class="btn btn-primary btn-sm btn-glow" id="openRegisterBtn">Sign up Free</button>
+      </div>
     `;
     document.getElementById("openLoginBtn")?.addEventListener("click", () => Modal.open("loginModal"));
     document.getElementById("openRegisterBtn")?.addEventListener("click", () => Modal.open("registerModal"));
   }
 }
 
-function handleLogout() {
+async function handleLogout() {
   api.setToken(null);
   appState.setUser(null);
+  await ensureSession();
   updateAuthUI();
-  Toast.info("Logged out successfully.");
+  Toast.info("Switched to Guest Student session.");
   navigateTo("landing");
 }
 
@@ -114,6 +137,7 @@ let dashboardFilterState = {
 };
 
 async function loadDashboardData() {
+  await ensureSession();
   try {
     const projects = await api.projects.list();
     appState.setProjects(projects);
@@ -385,6 +409,7 @@ function renderDocumentsList(docs) {
 }
 
 async function handleAddPastedText() {
+  await ensureSession();
   const textInput = document.getElementById("pastedMaterialInput");
   const titleInput = document.getElementById("pastedMaterialTitle");
   const content = textInput.value.trim();
@@ -416,6 +441,7 @@ async function handleAddPastedText() {
 
 async function handleFileUpload(file) {
   if (!file) return;
+  await ensureSession();
 
   const validExtensions = [".pdf", ".txt", ".md"];
   const lowerName = file.name.toLowerCase();
@@ -474,6 +500,7 @@ window.triggerQuickTopics = (docId) => {
   triggerGenerateTopics();
 };
 async function triggerGenerateSummary() {
+  await ensureSession();
   const sel = document.getElementById("summaryDocSelector");
   const docId = sel ? parseInt(sel.value) : null;
   if (!docId) {
@@ -565,6 +592,7 @@ function renderSummary(summary) {
 }
 
 async function triggerGenerateTopics() {
+  await ensureSession();
   const sel = document.getElementById("topicsDocSelector");
   const docId = sel ? parseInt(sel.value) : null;
   if (!docId) {
@@ -705,6 +733,7 @@ window.togglePaperQuestions = (paperId) => {
 };
 
 async function handleGeneratePaperSubmit() {
+  await ensureSession();
   const title = document.getElementById("qpTitleInput").value.trim();
   const numQuestions = parseInt(document.getElementById("qpNumQuestionsInput").value);
   const totalMarks = parseInt(document.getElementById("qpTotalMarksInput").value);
@@ -1212,6 +1241,7 @@ function setupEventListeners() {
 
   // Instant Study Kit Generator
   document.getElementById("quickGenerateStudyKitBtn")?.addEventListener("click", async () => {
+    await ensureSession();
     const subject = document.getElementById("quickSubjectInput").value.trim() || "Computer Science";
     const docTitle = document.getElementById("quickDocTitleInput").value.trim() || "Study_Notes.txt";
     let content = document.getElementById("quickStudyMaterialInput").value.trim();
@@ -1278,6 +1308,7 @@ function setupEventListeners() {
   });
 
   document.getElementById("landingCtaDemo")?.addEventListener("click", async () => {
+    await ensureSession();
     try {
       AILoader.show([
         "Initializing demo study project...",
@@ -1320,6 +1351,7 @@ function setupEventListeners() {
   });
 
   document.getElementById("btnGenerateAllStudyKit")?.addEventListener("click", async () => {
+    await ensureSession();
     if (!appState.activeProject) return;
     const docs = appState.projectDocuments;
     if (!docs || docs.length === 0) {
@@ -1407,6 +1439,7 @@ function setupEventListeners() {
 
   document.getElementById("newProjectForm")?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    await ensureSession();
     const name = document.getElementById("newProjName").value.trim();
     const subject = document.getElementById("newProjSubject").value.trim();
     const desc = document.getElementById("newProjDesc").value.trim();
@@ -1490,6 +1523,7 @@ function setupEventListeners() {
     backdrop.addEventListener("click", (e) => {
       if (e.target === backdrop) {
         backdrop.classList.remove("open");
+        backdrop.classList.remove("active");
       }
     });
   });

@@ -1,4 +1,4 @@
-﻿from fastapi import HTTPException, status
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.models.user import User
@@ -41,3 +41,22 @@ class AuthService:
 
         token = create_access_token(data={"sub": str(user.id), "email": user.email})
         return Token(access_token=token, token_type="bearer", user=UserOut.model_validate(user))
+
+    @staticmethod
+    def get_or_create_guest_user(db: Session) -> Token:
+        guest_email = "guest@studygen.ai"
+        user = db.query(User).filter(User.email == guest_email).first()
+        if not user:
+            hashed_pw = get_password_hash("StudyGenGuestPass2026!")
+            user = User(
+                name="Demo Student",
+                email=guest_email,
+                password_hash=hashed_pw
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        token = create_access_token(data={"sub": str(user.id), "email": user.email})
+        return Token(access_token=token, token_type="bearer", user=UserOut.model_validate(user))
+

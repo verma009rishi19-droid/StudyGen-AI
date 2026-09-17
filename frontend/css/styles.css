@@ -1751,7 +1751,8 @@ a:hover {
   padding: 20px;
 }
 
-.modal-backdrop.active {
+.modal-backdrop.active,
+.modal-backdrop.open {
   display: flex;
   animation: fadeIn 0.2s ease;
 }
@@ -1847,7 +1848,8 @@ a:hover {
   z-index: 2000;
 }
 
-.ai-loader-overlay.active {
+.ai-loader-overlay.active,
+.ai-loader-overlay.open {
   display: flex;
 }
 

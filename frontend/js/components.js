@@ -1,4 +1,4 @@
-﻿/**
+/**
  * StudyGen AI - UI Components & Utility Helpers
  */
 
@@ -54,12 +54,14 @@ const Modal = {
   open(modalId) {
     const el = document.getElementById(modalId);
     if (el) {
+      el.classList.add("active");
       el.classList.add("open");
     }
   },
   close(modalId) {
     const el = document.getElementById(modalId);
     if (el) {
+      el.classList.remove("active");
       el.classList.remove("open");
     }
   }
@@ -85,6 +87,7 @@ const AILoader = {
     this.init();
     if (!this.el) return;
 
+    this.el.classList.add("active");
     this.el.classList.add("open");
     let index = 0;
     if (this.subtitleEl) {
@@ -111,6 +114,7 @@ const AILoader = {
       this.intervalId = null;
     }
     if (this.el) {
+      this.el.classList.remove("active");
       this.el.classList.remove("open");
     }
   }
